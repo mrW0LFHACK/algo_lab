@@ -15,6 +15,7 @@ int getRandomNumber(int min, int max) {
     return rand() % (max - min) + min;
 }
 
+// ВОТ СЮДА ВСТАВЬТЕ СВОЮ СОБСТВЕННУЮ СОРТИРОВКУ НЕ ЗАБУДЬТЕ ПОМЕНЯТЬ НАЗВАНИЕ
 // Функция для сортировки простыми вставками
 void insertionSort(vector<int>& arr) {
     for (int i = 1; i < arr.size(); i++) {
