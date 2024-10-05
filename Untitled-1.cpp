@@ -11,11 +11,47 @@
 using namespace std;
 using namespace chrono;
 
+// Функция для получения случайного числа в заданном диапазоне
 int getRandomNumber(int min, int max) {
     return rand() % (max - min) + min;
 }
 
-// ВОТ СЮДА ВСТАВЬТЕ СВОЮ СОБСТВЕННУЮ СОРТИРОВКУ НЕ ЗАБУДЬТЕ ПОМЕНЯТЬ НАЗВАНИЕ
+// Функция для построения кучи (пирамиды)
+void heapify(vector<int>& arr, int n, int i) {
+    int largest = i; // Индекс корневого узла
+    int left = 2 * i + 1; // Индекс левого потомка
+    int right = 2 * i + 2; // Индекс правого потомка
+
+    // Если левый потомок больше, чем корневой узел
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+
+    // Если правый потомок больше, чем корневой узел
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    // Если корневой узел не является наибольшим
+    if (largest != i) {
+        swap(arr[i], arr[largest]); // Меняем местами корневой узел и наибольший
+        heapify(arr, n, largest); // Рекурсивно вызываем функцию для поддерева
+    }
+}
+
+// Функция для пирамидальной сортировки
+void heapSort(vector<int>& arr) {
+    int n = arr.size();
+
+    // Построение пирамиды
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+
+    // Извлечение элементов из пирамиды
+    for (int i = n - 1; i > 0; i--) {
+        swap(arr[0], arr[i]); // Меняем местами корневой узел и последний элемент
+        heapify(arr, i, 0); // Рекурсивно вызываем функцию для поддерева
+    }
+}
+
 // Функция для сортировки простыми вставками
 void insertionSort(vector<int>& arr) {
     for (int i = 1; i < arr.size(); i++) {
@@ -45,7 +81,7 @@ void printDuration(microseconds duration) {
     milliseconds millisec = duration_cast<milliseconds>(duration); // Получаем время в миллисекундах
     int microsec = duration.count() % 1000; // Остаток времени в микросекундах
 
-    cout << millisec.count() 
+    cout << millisec.count()
          << setfill('0') << setw(3) << microsec
          << " micorsec" << endl;
 }
@@ -64,38 +100,49 @@ int main() {
     for (int arraySize : sizes) {
         vector<int> arr(arraySize); // Инициализация вектора с размером arraySize
         vector<int> arrCopy(arraySize); // Копия для qsort
+        vector<int> arrInsertion(arraySize); // Копия для сортировки вставками
 
-        // Генерация случайных чисел в зависимости от размера массива
-        if (arraySize < 500) {
-            for (int i = 0; i < arraySize; i++) {
-                arr[i] = getRandomNumber(100, 1000); // диапазон [100, 1000)
+        // Считывание данных из файла
+        string filename = "d" + to_string(arraySize) + ".txt";
+        ifstream inputFile(filename);
+        if (inputFile.is_open()) {
+            int num;
+            int i = 0;
+            while (inputFile >> num) {
+                arr[i] = num;
+                arrCopy[i] = num;
+                arrInsertion[i] = num;
+                i++;
             }
+            inputFile.close();
         } else {
-            for (int i = 0; i < arraySize; i++) {
-                arr[i] = getRandomNumber(1000, 10000); // диапазон [1000, 10000)
-            }
+            cout << "Невозможно открыть файл: " << filename << endl;
+            return 1; // Выход с кодом ошибки
         }
 
-        // Копируем массив для qsort
-        arrCopy = arr;
+        // Замер времени сортировки пирамидой
+        high_resolution_clock::time_point startHeap = high_resolution_clock::now();
+        heapSort(arr);
+        high_resolution_clock::time_point stopHeap = high_resolution_clock::now();
 
-        // Вывод несортированного массива в файл
-        string originalFile = "d" + to_string(arraySize) + ".txt";
-        printArrayToFile(arr, originalFile);
+        // Подсчет времени выполнения сортировки пирамидой
+        microseconds durationHeap = duration_cast<microseconds>(stopHeap - startHeap);
+        cout << "Heap sort time for " << arraySize << " elements: ";
+        printDuration(durationHeap);
+
+        // Вывод отсортированного массива в файл
+        string sortedFile = "d" + to_string(arraySize) + "-s" + ".txt";
+        printArrayToFile(arr, sortedFile);
 
         // Замер времени сортировки простыми вставками
         high_resolution_clock::time_point startInsertion = high_resolution_clock::now();
-        insertionSort(arr);
+        insertionSort(arrInsertion);
         high_resolution_clock::time_point stopInsertion = high_resolution_clock::now();
 
         // Подсчет времени выполнения сортировки вставками
         microseconds durationInsertion = duration_cast<microseconds>(stopInsertion - startInsertion);
         cout << "Insertion sort time for " << arraySize << " elements: ";
         printDuration(durationInsertion);
-
-        // Вывод отсортированного массива в файл
-        string sortedFile = "d" + to_string(arraySize) +"-s" + ".txt";
-        printArrayToFile(arr, sortedFile);
 
         // Замер времени стандартной функции qsort
         high_resolution_clock::time_point startQSort = high_resolution_clock::now();
