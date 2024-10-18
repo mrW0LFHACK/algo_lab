@@ -1,3 +1,39 @@
+/*
+// Функция для построения кучи (пирамиды)
+void heapify(vector<int>& arr, int n, int i) {
+    int largest = i; // Индекс корневого узла 
+    int left = 2 * i + 1; // Индекс левого потомка
+    int right = 2 * i + 2; // Индекс правого потомка
+
+    // Если левый потомок больше, чем корневой узел
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+
+    // Если правый потомок больше, чем корневой узел
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    // Если корневой узел не является наибольшим
+    if (largest != i) {
+        swap(arr[i], arr[largest]); // Меняем местами корневой узел и наибольший
+        heapify(arr, n, largest); // Рекурсивно вызываем функцию для поддерева
+    }
+}
+
+// Функция для пирамидальной сортировки
+void heapSort(vector<int>& arr) {
+    int n = arr.size();
+
+    // Построение пирамиды
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+
+    // Извлечение элементов из пирамиды
+    for (int i = n - 1; i > 0; i--) {
+        swap(arr[0], arr[i]); // Меняем местами корневой узел и последний элемент
+        heapify(arr, i, 0); // Рекурсивно вызываем функцию для поддерева
+    }
+}*/
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
@@ -53,6 +89,26 @@ void heapSort(vector<int>& arr) {
     for (int i = n - 1; i > 0; i--) {
         swap(arr[0], arr[i]); // Н8: Занести Ri
         heapify(arr, i, 0);   // Н3: Приготовиться к протаскиванию (восстановление пирамиды)
+    }
+}
+// Функция для построения кучи (пирамиды)
+void heapify(vector<int>& arr, int n, int i) {
+    int largest = i; // Индекс корневого узла 
+    int left = 2 * i + 1; // Индекс левого потомка
+    int right = 2 * i + 2; // Индекс правого потомка
+
+    // Если левый потомок больше, чем корневой узел
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+
+    // Если правый потомок больше, чем корневой узел
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    // Если корневой узел не является наибольшим
+    if (largest != i) {
+        swap(arr[i], arr[largest]); // Меняем местами корневой узел и наибольший
+        heapify(arr, n, largest); // Рекурсивно вызываем функцию для поддерева
     }
 }
 
