@@ -16,24 +16,28 @@ int getRandomNumber(int min, int max) {
     return rand() % (max - min) + min;
 }
 
-// Функция для построения кучи (пирамиды)
-void heapify(vector<int>& arr, int n, int i) {
-    int largest = i; // Индекс корневого узла
-    int left = 2 * i + 1; // Индекс левого потомка
-    int right = 2 * i + 2; // Индекс правого потомка
+#include <iostream>
+#include <vector>
 
-    // Если левый потомок больше, чем корневой узел
+using namespace std;
+
+// H4 [Продвинуться вниз]:
+void heapify(vector<int>& arr, int n, int i) {
+    int largest = i;
+    int left = 2 * i + 1; 
+    int right = 2 * i + 2; 
+
+    // Н5: Найти большего потомка
     if (left < n && arr[left] > arr[largest])
         largest = left;
 
-    // Если правый потомок больше, чем корневой узел
     if (right < n && arr[right] > arr[largest])
         largest = right;
 
-    // Если корневой узел не является наибольшим
+    // Н6: Больше, чем K?
     if (largest != i) {
-        swap(arr[i], arr[largest]); // Меняем местами корневой узел и наибольший
-        heapify(arr, n, largest); // Рекурсивно вызываем функцию для поддерева
+        swap(arr[i], arr[largest]); // Н7: Поднять его вверх
+        heapify(arr, n, largest);   // Рекурсивный вызов для поддерева
     }
 }
 
@@ -41,14 +45,14 @@ void heapify(vector<int>& arr, int n, int i) {
 void heapSort(vector<int>& arr) {
     int n = arr.size();
 
-    // Построение пирамиды
+    // Н1: Начальная установка (Построение пирамиды)
     for (int i = n / 2 - 1; i >= 0; i--)
         heapify(arr, n, i);
 
-    // Извлечение элементов из пирамиды
+    // Н2: Уменьшение размера пирамиды и извлечение элементов
     for (int i = n - 1; i > 0; i--) {
-        swap(arr[0], arr[i]); // Меняем местами корневой узел и последний элемент
-        heapify(arr, i, 0); // Рекурсивно вызываем функцию для поддерева
+        swap(arr[0], arr[i]); // Н8: Занести Ri
+        heapify(arr, i, 0);   // Н3: Приготовиться к протаскиванию (восстановление пирамиды)
     }
 }
 
