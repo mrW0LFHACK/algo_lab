@@ -57,60 +57,105 @@ int getRandomNumber(int min, int max) {
 
 using namespace std;
 
-// H4 [Продвинуться вниз]:
-void heapify(vector<int>& arr, int n, int i) {
-    int largest = i;
-    int left = 2 * i + 1; 
-    int right = 2 * i + 2; 
+#include <iostream>
+#include <vector>
 
-    // Н5: Найти большего потомка
-    if (left < n && arr[left] > arr[largest])
-        largest = left;
+using namespace std;
 
-    if (right < n && arr[right] > arr[largest])
-        largest = right;
+#include <iostream>
+#include <vector>
 
-    // Н6: Больше, чем K?
-    if (largest != i) {
-        swap(arr[i], arr[largest]); // Н7: Поднять его вверх
-        heapify(arr, n, largest);   // Рекурсивный вызов для поддерева
+using namespace std;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void heapify(vector<int>& R, vector<int>& K, int l, int r) {
+    int j = l; // Шаг 3: Приготовиться к "протаскиванию"
+    while (true) {
+        // Шаг 4: Продвинуться вниз
+        int i = j;
+        j = 2 * j;
+        if (j < r) {
+            // Шаг 5: Найти наибольшего потомка
+            if (K[j] < K[j + 1]) {
+                j = j + 1;
+            }
+            if (K[i] >= K[j]) {
+                R[i] = R[j];
+                K[i] = K[j];
+                break; 
+            } else {
+                R[i] = R[j];
+                K[i] = K[j];
+                continue; 
+            }
+        } else if (j == r) {
+            // Шаг 6: Больше чем К?
+            if (K[i] >= K[j]) {
+                // Шаг 8: Занести R.
+                R[i] = R[j];
+                K[i] = K[j];
+                break; 
+            } else {
+                // Шаг 7: Поднять его вверх
+                R[i] = R[j];
+                K[i] = K[j];
+                continue; // Переход к следующей итерации цикла
+            }
+        } else if (j > r) {
+            // Шаг 8: Занести R.
+            R[i] = R[j];
+            K[i] = K[j];
+            break; 
+        }
     }
 }
 
-// Функция для пирамидальной сортировки
-void heapSort(vector<int>& arr) {
-    int n = arr.size();
+void heapSort(vector<int>& R) {
+    int N = R.size();
+    vector<int> K(N); // Массив K для хранения ключей
+    int l = (N / 2) + 1; // Шаг 1: Начальная установка
+    int r = N;
 
-    // Н1: Начальная установка (Построение пирамиды)
-    for (int i = n / 2 - 1; i >= 0; i--)
-        heapify(arr, n, i);
+    // Построение пирамиды
+    while (l > 1) {
+        // Шаг 2: Уменьшить l или r
+        l = l - 1;
+        R[r - 1] = R[l - 1];
+        K[r - 1] = K[l - 1]; // Копирование ключа в K
+        R[l - 1] = R[r];
+        K[l - 1] = K[r]; // Копирование ключа в K
+        r = r - 1;
+        if (l == 1) {
+            if (r == N) {
+                break; // Пирамида построена
+            } else {
+                // Шаг 3: Приготовиться к "протаскиванию"
+                heapify(R, K, l, r);
+            }
+        } else {
+            // Шаг 3: Приготовиться к "протаскиванию"
+            heapify(R, K, l, r);
+        }
+    }
 
-    // Н2: Уменьшение размера пирамиды и извлечение элементов
-    for (int i = n - 1; i > 0; i--) {
-        swap(arr[0], arr[i]); // Н8: Занести Ri
-        heapify(arr, i, 0);   // Н3: Приготовиться к протаскиванию (восстановление пирамиды)
+    // Сортировка
+    while (r > 1) {
+        // Шаг 2: Уменьшить l или r
+        R[r - 1] = R[0];
+        K[r - 1] = K[0]; // Копирование ключа в K
+        R[0] = R[r];
+        K[0] = K[r]; // Копирование ключа в K
+        r = r - 1;
+        // Шаг 3: Приготовиться к "протаскиванию"
+        heapify(R, K, 1, r);
     }
 }
-// Функция для построения кучи (пирамиды)
-void heapify(vector<int>& arr, int n, int i) {
-    int largest = i; // Индекс корневого узла 
-    int left = 2 * i + 1; // Индекс левого потомка
-    int right = 2 * i + 2; // Индекс правого потомка
 
-    // Если левый потомок больше, чем корневой узел
-    if (left < n && arr[left] > arr[largest])
-        largest = left;
 
-    // Если правый потомок больше, чем корневой узел
-    if (right < n && arr[right] > arr[largest])
-        largest = right;
-
-    // Если корневой узел не является наибольшим
-    if (largest != i) {
-        swap(arr[i], arr[largest]); // Меняем местами корневой узел и наибольший
-        heapify(arr, n, largest); // Рекурсивно вызываем функцию для поддерева
-    }
-}
 
 // Функция для сортировки простыми вставками
 void insertionSort(vector<int>& arr) {
