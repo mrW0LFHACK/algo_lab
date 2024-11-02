@@ -52,26 +52,6 @@ int getRandomNumber(int min, int max) {
     return rand() % (max - min) + min;
 }
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
 void heapify(vector<int>& R, vector<int>& K, int l, int r) {
     int j = l; // Шаг 3: Приготовиться к "протаскиванию"
     while (true) {
